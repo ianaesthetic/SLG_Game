@@ -21,6 +21,16 @@ public class heap {
 		nodeCount = 0; 
 		root = -1; 
 	}
+
+	public void Clear() {
+		id.Clear (); 
+		key.Clear (); 
+		dist.Clear (); 
+		l.Clear (); 
+		r.Clear (); 
+		nodeCount = 0; 
+		root = -1; 
+	}
 		
 	public void Swap(ref int a, ref int b) {
 		int tmp = b; 
@@ -80,9 +90,31 @@ public class PathFinding : MonoBehaviour {
 	public int nodeCount;
 	public List<edgeInput> edge; 
 
-	List<List<int>> 
+	private struct edgeListNode {
+		public int to; 
+		public float dist; 
+
+		public edgeListNode(int _to, float _dist) {
+			to = _to; 
+			dist = _dist; 
+		}
+	}
+
+	List<edgeListNode>[] edgeList; 
+	heap open; 
+
+	public void addedge (int _from, int _to, float _dist) {
+		edgeList [_from].Add (new edgeListNode (_to, _dist)); 
+		edgeList [_to].Add (new edgeListNode (_from, _dist)); 
+	}
 
 	void Start() {
+		edgeList = new List<edgeListNode> [nodeCount]; 
+		for (int i = 0; i < edge.Count; ++i)
+			addedge (edge [i].start, edge [i].end, edge [i].start); 
+	}
 		
+	public void PathQuery(ref List<int> outPath, int start, int terminal) {	
+		open.Clear (); 
 	}
 }
