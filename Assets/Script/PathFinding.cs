@@ -69,8 +69,20 @@ public class heap {
 };
 
 public class PathFinding : MonoBehaviour {
+	
+	[System.Serializable]
+	public struct edgeInput {
+		public int start;
+		public int end; 
+		public float dist; 
+	};
+
+	public int nodeCount;
+	public List<edgeInput> edge; 
+
+	List<List<int>> 
 
 	void Start() {
-	
+		
 	}
 }

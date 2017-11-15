@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{B2B58FB2-4462-6B0C-A872-40DD957E5FE0}</ProjectGuid>
+    <ProjectGuid>{8F45598F-558D-FD1F-4222-631FD6734B1C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -51,7 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Script\Road.cs" />
+     <Compile Include="Assets\Script\PathFinding.cs" />
      <Compile Include="Assets\Script\RoadSpot.cs" />
      <Compile Include="Assets\Script\UnitMover.cs" />
  <Reference Include="UnityEngine.UI">

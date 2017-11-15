@@ -693,17 +693,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf9205c7d73f5e48994d4fb79afa736, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  road:
-  - start: 0
-    end: 4
-    dist: 1
-  - start: 1
-    end: 4
-    dist: 1
-  - start: 2
-    end: 4
-    dist: 1
-  - start: 3
-    end: 4
-    dist: 1
-  spotCount: 5
+  nodeCount: 0
+  edge: []
