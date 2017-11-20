@@ -3,28 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitMover : MonoBehaviour {
+	public int curPos;
+	public List<int> nxtPos;
+	private bool isGoing; 
 
-	public struct direction {
-		float moveX;
-		float moveY; 
-		float moveZ; 
-	};
-
-	public int dest;
-	private int curDest; 
-
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		Destroy (); 
-	}
-			
-	void Destroy() {
-		if (curDest == dest) {
-			Destroy (gameObject); 
-		}
+	void Start() {
+		List<int> nxtPos = new List<int> (); 	
+		isGoing = false; 
 	}
 }

@@ -38,7 +38,7 @@ public class heap {
 		a = b; 
 	}
 
-	int merge(int a, int b) {	
+	private int merge(int a, int b) {	
 		if (a < 0 || b < 0)
 			return a < 0 ? b : a;
 		if (key[b] < key[a])
@@ -56,7 +56,7 @@ public class heap {
 		return a; 
 	}
 
-	void Insert(int _id, int _key) {
+	public void Insert(int _id, int _key) {
 		id.Add (_id); 
 		key.Add (_key);
 		l.Add (-1); 
@@ -65,56 +65,145 @@ public class heap {
 		merge (root, nodeCount); 
 	}
 		
-	void Pop() {
+	public void Pop() {
 		root = merge (l[root], r[root]); 
 	}
 
-	int top_id() {
+	public int TopID() {
 		return root < 0 ? -1 : id [root]; 
 	}
 
-	int top_key() {
+	public int TopKey() {
 		return root < 0 ? -1 : key [root]; 
 	}
 };
-
-public class PathFinding : MonoBehaviour {
 	
-	[System.Serializable]
-	public struct edgeInput {
-		public int start;
-		public int end; 
-		public float dist; 
-	};
+public class map {
+	public struct node {
+		public int id;	
+		public int dist; 
 
-	public int nodeCount;
-	public List<edgeInput> edge; 
-
-	private struct edgeListNode {
-		public int to; 
-		public float dist; 
-
-		public edgeListNode(int _to, float _dist) {
-			to = _to; 
-			dist = _dist; 
+		public node(int _id, int _dist) {
+			id = _id; 
+			dist = _dist;
 		}
+	};	
+		
+	List<node> nodeMem;
+
+	public void Clear() {
+		nodeMem.Clear (); 
 	}
 
-	List<edgeListNode>[] edgeList; 
-	heap open; 
+	public bool Find(int id) {
+		for (int i = 0; i < nodeMem.Count; ++i) {
+			if (nodeMem [i].id == id)
+				return true; 
+		}
+		return false; 
+	}
+		
+	public void Insert(int id, int dist) {
+		nodeMem.Add (new node(id, dist));
+	}
+		
+	public void Delete(int id) { 
+		for (int i = 0; i < nodeMem.Count; ++i)
+			if (nodeMem [i].id == id) {
+				nodeMem.RemoveAt (i); 
+				break;
+			}
+	}
 
-	public void addedge (int _from, int _to, float _dist) {
-		edgeList [_from].Add (new edgeListNode (_to, _dist)); 
-		edgeList [_to].Add (new edgeListNode (_from, _dist)); 
+};
+
+public class PathFinding : MonoBehaviour {
+
+	private struct pair{
+		public float h; 
+		public float w; 
+
+		pair(float _h, float _w) {
+			h = _h; 
+			w = _w; 
+		}
+	};
+
+	public float lB, rB, uB, dB; 
+	public int nB;
+	private float wB, hB, hStart, wStart, scaleFactor, interval;
+	public GameObject hexagon; 
+
+	private heap unCover; 
+	private map covered; 
+	private pair[] direction; 
+
+	public void GetPos(out float posH, out float posW, int id) {
+		int tmp; 
+		tmp = (int)(id / nB); 
+		posH = (float)tmp * interval + dB;
+		tmp = id % nB; 
+		posW = (float)tmp * interval + lB;
+	}
+
+	public void GetID(float posH, float posW, out int id) {
+		if (posH < hStart || posH > hStart + hB || posW < wStart || posW > wStart + wB) {
+			id = -1; 
+			return; 
+		}
+
 	}
 
 	void Start() {
-		edgeList = new List<edgeListNode> [nodeCount]; 
-		for (int i = 0; i < edge.Count; ++i)
-			addedge (edge [i].start, edge [i].end, edge [i].start); 
+
+		float ratio = Mathf.Sqrt (3); 
+		scaleFactor = 0.9f;
+
+
+		wB = rB - lB;
+		hB = wB - dB;
+
+		if (hB * ratio < wB) {
+			hB *= scaleFactor; 
+			wB = hB * ratio; 
+		}
+		else {
+			wB *= scaleFactor; 
+			hB = wB / ratio; 
+		}
+
+		interval = hB / (float)nB;
+		hStart = dB + (wB - dB - hB) / 2.0f; 
+		wStart = lB + (rB - lB - wB) / 2.0f; 
+	
+		for (int i = 0; i < nB; ++i)
+			for (int j = 0; j < nB; ++j) {
+				GameObject tObject = Instantiate (hexagon, new Vector3 (i * interval + hStart, j * interval + wStart), Quaternion.identity) as GameObject;
+				tObject.GetComponent<Hexagon> ().SetId (i * nB + j);
+			}
+
+		float tInterval_0 = interval / 2.0; 
+		float tInterval_1 = tInterval_0 * ratio; 
+	
+		direction = new int[6] (); 
+		direction [0] = new pair (tInterval_0, tInterval_1);
+		direction [1] = new pair (interval, 0); 
+		direction [2] = new pair (tInterval_0, -tInterval_1); 
+		direction [3] = new pair (-tInterval_0, tInterval_1); 
+		direction [4] = new pair (-interval, 0); 
+		direction [5] = new pair (-tInterval_0, tInterval_1);
 	}
-		
-	public void PathQuery(ref List<int> outPath, int start, int terminal) {	
-		open.Clear (); 
+
+	public void FindPath(GameObject unit, int dest) {
+		var move = unit.GetComponent<UnitMover> ();
+		move.nxtPos.Clear (); 
+		unCover.Clear (); 
+		covered.Clear (); 
+		unCover.Insert (move.curPos, 0);
+		int curID = unCover.TopID (); 
+		while (curID != dest) {
+			covered.Insert (curID, unCover.TopKey ()); 
+			unCover.Pop (); 
+		}
 	}
 }
